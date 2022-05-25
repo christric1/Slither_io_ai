@@ -7,7 +7,7 @@ import mahotas
 
 
 def preprocess(im):
-    return mahotas.resize.resize_rgb_to(im, (84, 84)) / 255.0
+    return mahotas.imresize(mahotas.colors.rgb2grey(im), (84, 84)) / 255.0
 
 
 @tf.function

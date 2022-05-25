@@ -46,7 +46,7 @@ class Slitherio(gym.Env):
         return self.browser.find_element_by_xpath(self.xpaths['mainpage']).value_of_css_property("display") != "none"
 
     def wait_until_can_enter_nickname(self):
-        WebDriverWait(self.browser, 20).until(EC.element_to_be_clickable((By.XPATH, self.xpaths['nickname'])))
+        WebDriverWait(self.browser, 60).until(EC.element_to_be_clickable((By.XPATH, self.xpaths['nickname'])))
 
     def enter_nickame(self, nickname):
         self.wait_until_can_enter_nickname()
@@ -81,7 +81,6 @@ class Slitherio(gym.Env):
     def observe(self):
         im = mss.mss().grab(self.monitor)
         im = np.array(im)[:, :, :3]
-        # im = self.preprocess(im)
         self.last_observation = im
         return im
 
@@ -109,6 +108,9 @@ class Slitherio(gym.Env):
         new_score = try_forever(self.get_score)
         reward = new_score - self.score
         self.score = new_score
+
+        if self.is_terminal():
+            reward -= 50
         return reward
 
     def step(self, action):
